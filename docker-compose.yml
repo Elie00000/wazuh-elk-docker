@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  wazuh-logstash:
+    build: .
+    hostname: wazuh-logstash
+    restart: always
+    ports:
+      - "1514/udp"
+      - "1515:1515"
+      - "514/udp"
+      - "55000:55000"
+      - "5000:5000"
+    networks:
+      - wazuh-elk
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    hostname: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    networks:
+      - wazuh-elk
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.9.0
+    hostname: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - wazuh-elk
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./kibana/config:/usr/share/kibana/config
+
+networks:
+  wazuh-elk:
+    driver: bridge
+
+volumes:
+  es-data:
