@@ -30,6 +30,7 @@ services:
       - LS_HEAP_SIZE=2048m
     volumes:
       - ./logstash/config:/etc/logstash/conf.d
+      - ./logstash/templates:/etc/logstash/templates
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
