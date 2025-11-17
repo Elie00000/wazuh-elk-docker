@@ -1,20 +1,35 @@
 version: '3.8'
 
 services:
-  wazuh-logstash:
-    build: .
-    hostname: wazuh-logstash
+  wazuh-manager:
+    image: wazuh/wazuh:latest
+    hostname: wazuh-manager
     restart: always
     ports:
       - "1514/udp"
       - "1515:1515"
       - "514/udp"
       - "55000:55000"
+    networks:
+      - wazuh-elk
+    volumes:
+      - wazuh-data:/var/ossec/data
+
+  logstash:
+    image: wazuh/wazuh-logstash:latest
+    hostname: logstash
+    restart: always
+    command: -f /etc/logstash/conf.d/
+    ports:
       - "5000:5000"
     networks:
       - wazuh-elk
     depends_on:
       - elasticsearch
+    environment:
+      - LS_HEAP_SIZE=2048m
+    volumes:
+      - ./logstash/config:/etc/logstash/conf.d
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
@@ -46,4 +61,5 @@ networks:
     driver: bridge
 
 volumes:
+  wazuh-data:
   es-data:
