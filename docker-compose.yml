@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   wazuh-manager:
-    image: wazuh/wazuh-manager:latest
+    image: wazuh/wazuh-manager:lastest
     hostname: wazuh-manager
     restart: always
     ports:
