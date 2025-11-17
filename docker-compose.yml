@@ -16,7 +16,7 @@ services:
       - wazuh-data:/var/ossec/data
 
   logstash:
-    image: wazuh/wazuh-logstash:latest
+    image: docker.elastic.co/logstash/logstash:8.9.0
     hostname: logstash
     restart: always
     command: -f /etc/logstash/conf.d/
